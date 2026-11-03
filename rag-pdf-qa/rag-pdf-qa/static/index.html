@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PageWise — Your personal reading room</title>
+<style>
+:root{--bg:#f4f2eb;--card:#fcfbf7;--text:#243b32;--muted:#6d776e;--line:#dcded3;--brand:#244d3c;--brand-soft:#e8eddf;--err:#a4392e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #bb8753;outline-offset:4px}.hidden{display:none!important}
+.topbar{height:88px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font:700 27px Georgia,serif;letter-spacing:-1px;display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;background:var(--brand);color:#f4f2eb;width:36px;height:40px;border-radius:3px 12px 3px 3px;font:24px Georgia}.eyebrow{font:11px monospace;letter-spacing:2px;text-transform:uppercase}.topnote{color:var(--muted);font-size:12px}.topnote:before{content:'';display:inline-block;width:6px;height:6px;background:#54795a;border-radius:50%;margin-right:9px}.wrap{max-width:1440px;margin:auto;padding:38px 5% 24px}.intro{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:34px}.intro h1{font:normal clamp(38px,4.6vw,64px)/1.05 Georgia,serif;letter-spacing:-2px;margin:12px 0}.intro h1 em{color:#72805d;font-weight:normal}.sub{font-size:14px;line-height:1.7;color:var(--muted);max-width:285px;margin:0 0 8px}.workspace{display:grid;grid-template-columns:295px minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card);min-height:550px;box-shadow:0 12px 35px #243b3205}.sidebar{background:#eeeee5;padding:26px 23px;display:flex;flex-direction:column;border-right:1px solid var(--line)}.section-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.section-label span:last-child{font:11px monospace;color:var(--muted)}
+/* upload */
+.drop{width:100%;border:1px dashed #a9b4a0;background:#f8f8f0;border-radius:5px;padding:28px 16px;text-align:center;color:var(--text);transition:background .2s,transform .2s}.drop:hover,.drop.over{background:#e2e9d8;transform:translateY(-2px)}.drop b{display:block;font-size:14px;margin-top:20px}.drop small{display:block;color:var(--muted);font-size:12px;line-height:1.8;margin-top:8px}.paper-icon{width:43px;height:53px;border:1px solid #8f9e80;border-radius:3px 12px 3px 3px;margin:auto;display:grid;place-items:center;font:10px monospace;letter-spacing:1px;box-shadow:5px 5px 0 #e3e7d8}.limit{text-align:center;font:10px monospace;color:var(--muted);margin:14px 0}.doc{padding:20px;background:#f8f8f0;border:1px solid var(--line);border-radius:5px}.doc .name{display:block;font-size:14px;font-weight:600;overflow-wrap:anywhere;line-height:1.6;margin:18px 0 10px}.pill{font:11px monospace;color:var(--muted);display:block;line-height:1.6}.doc button{margin-top:20px;background:none;border:0;border-bottom:1px solid #b2b9aa;padding:0 0 4px;color:var(--muted);font-size:12px}.msg-status{font-size:12px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}.err{color:var(--err)}.sidebar-note{margin-top:auto;padding-top:36px}.sidebar-note h3{font:normal 23px Georgia;margin:0 0 12px}.sidebar-note p{font-size:12px;line-height:1.8;color:var(--muted)}.steps{display:flex;gap:8px;margin-top:24px}.steps span{font:10px monospace;letter-spacing:1px;color:#73806b}.steps span+span:before{content:'/';margin-right:8px;color:#adb4a3}.chat-panel{padding:0 30px 20px;min-width:0;display:flex;flex-direction:column}.chat-heading{height:65px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.status-pill{font-size:10px;padding:6px 10px;border:1px solid var(--line);border-radius:20px;color:var(--muted)}
+/* chat */
+#chat{height:365px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:24px 0;scroll-behavior:smooth}.empty{margin:auto;text-align:center;max-width:460px;padding:24px 8px}.empty .ornament{font:48px Georgia;color:#9ba78b;line-height:1}.empty h2{font:normal 32px Georgia;letter-spacing:-.7px;margin:20px 0 12px}.empty p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}.suggestions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:24px}.suggestions button{background:transparent;color:var(--brand);font-size:11px;border:1px solid var(--line);padding:9px 12px;border-radius:4px}.suggestions button:hover{background:var(--brand-soft)}.bubble{max-width:92%;padding:16px 18px;border-radius:5px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}.bubble.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:0}.bubble.bot{align-self:flex-start;background:#f0f1e9;border-bottom-left-radius:0;width:100%}.bubble.bot.err{background:#f9eae3;color:var(--err)}details.src{margin-top:16px;padding-top:12px;border-top:1px solid #d4dccb;font-size:12px;white-space:normal}details.src summary{cursor:pointer;color:var(--brand)}.src-item{border-left:2px solid #9bab88;padding:5px 12px;margin:14px 0;color:#4c5b4f}.pg{font-weight:bold;margin-right:10px}.sc{color:var(--muted);font:10px monospace}.ask{display:flex;gap:10px;padding:9px;background:white;border:1px solid #cdd4c4;border-radius:6px;margin-top:auto}.ask:focus-within{border-color:#66805d;box-shadow:0 0 0 3px #e8eddf}.ask input{min-width:0;flex:1;border:0;background:none;padding:8px;color:var(--text);font-size:13px;outline:none}.ask input:disabled{cursor:not-allowed}.ask button{background:var(--brand);color:#fff;border:0;border-radius:4px;padding:11px 17px;font-size:12px}.hint{color:var(--muted);font-size:10px;text-align:center;margin-top:12px}.footer{display:flex;justify-content:space-between;gap:15px;padding-top:22px;color:var(--muted);font:10px monospace;letter-spacing:1px}.spinner{display:inline-block;width:12px;height:12px;border:2px solid #bcc8b1;border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:760px){.topbar{height:70px}.topnote{font-size:10px}.wrap{padding:26px 5%}.intro{display:block}.sub{max-width:none}.workspace{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:20px}.sidebar-note{display:none}.section-label{margin-bottom:16px}.drop{padding:18px}.drop .paper-icon{display:none}.drop b{margin-top:0}.chat-panel{padding:0 18px 18px}#chat{height:380px}.intro h1{letter-spacing:-1px}.footer{font-size:9px}.bubble{max-width:100%}.empty h2{font-size:28px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+.answer{white-space:normal;min-width:0}.answer p{margin:0 0 12px}.answer p:last-child{margin-bottom:0}.answer h3{font-size:16px;margin:18px 0 8px}.answer ul,.answer ol{padding-left:24px}.answer li{margin:5px 0}.answer code{font-family:monospace;background:#e2e7db;padding:2px 4px;border-radius:3px}.answer pre{overflow:auto;white-space:pre;padding:12px;background:#e2e7db}.table-scroll{overflow-x:auto;max-width:100%;margin:12px 0}.answer table{border-collapse:collapse;width:100%;font-size:13px;min-width:360px}.answer th,.answer td{border:1px solid #cbd5c2;padding:10px 12px;text-align:left;vertical-align:top}.answer th{background:#dfe7d7;font-weight:600}.answer tr:nth-child(even){background:#f7f8f2}.bubble{flex-shrink:0;min-width:0}.src-item div{line-height:1.8;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand"><span class="mark" aria-hidden="true">p</span> PageWise<span style="color:#899677">.</span></div><div class="topnote">A little clarity, on every page.</div></header>
+<main class="wrap">
+<section class="intro"><div><div class="eyebrow">Your personal reading room</div><h1>Less searching.<br><em>More understanding.</em></h1></div><p class="sub">Bring a document. Follow your curiosity.<br>Find answers with a clear path back<br>to the page they came from.</p></section>
+<div class="workspace">
+<aside class="sidebar"><div class="section-label"><span class="eyebrow">The document</span><span>01 / 01</span></div>
+<div id="uploadBox"><button type="button" class="drop" id="drop"><span class="paper-icon" aria-hidden="true">PDF</span><b>Make room for a good read.</b><small>Drop your PDF here<br>or <u>browse files</u></small></button><p class="limit">PDF ONLY · UP TO 100 MB</p><input type="file" id="file" accept="application/pdf,.pdf" class="hidden" aria-label="Choose PDF"></div>
+<div id="docBox" class="doc hidden"><div class="paper-icon" aria-hidden="true">PDF</div><span class="name" id="docName"></span><span class="pill" id="docMeta"></span><button id="removeBtn">Remove document</button></div>
+<div id="uploadMsg" class="msg-status" role="status" aria-live="polite"></div>
+<div class="sidebar-note"><h3>Stay curious.<br>Stay grounded.</h3><p>Every answer draws from your document. Open the sources to read the supporting passages in context.</p><div class="steps"><span>UPLOAD</span><span>ASK</span><span>EXPLORE</span></div></div></aside>
+<section class="chat-panel" aria-label="Document conversation"><div class="chat-heading"><span class="eyebrow">Ask the pages</span><span id="readyLabel" class="status-pill">Awaiting a document</span></div>
+<div id="chat" role="log" aria-live="polite"></div>
+<form class="ask" id="askForm"><input id="question" aria-label="Your question" type="text" placeholder="What would you like to understand?" maxlength="1000" autocomplete="off" disabled><button id="askBtn" disabled>Ask ↗</button></form>
+<div class="hint">Grounded in your document. Always check the cited passages.</div></section></div>
+<footer class="footer"><span>A SPACE FOR DEEPER READING</span><span>PDF Q&amp;A / PageWise</span></footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const chat = $('chat'), qInput = $('question'), askBtn = $('askBtn');
+let busy = false;
+let documentReady = false;
+
+function setReady(s) {
+  const ready = s.ready;
+  documentReady = ready;
+  $('readyLabel').textContent = ready ? 'Ready to explore' : 'Awaiting a document';
+  $('uploadBox').classList.toggle('hidden', ready);
+  $('docBox').classList.toggle('hidden', !ready);
+  if (ready) {
+    $('docName').textContent = s.name;
+    $('docMeta').textContent = s.pages + ' pages · ' + s.chunks + ' chunks';
+
+  } else {
+
+  }
+  setBusy(busy);
+  if (!chat.querySelector('.bubble')) clearChat();
+}
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  let body = {};
+  try { body = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(body.detail || 'Request failed (' + r.status + ')');
+  return body;
+}
+
+function showMsg(text, err, loading) {
+  const el = $('uploadMsg');
+  el.className = 'msg-status' + (err ? ' err' : '');
+  el.textContent = '';
+  if (loading) { const s = document.createElement('span'); s.className = 'spinner'; el.appendChild(s); }
+  el.appendChild(document.createTextNode(text));
+}
+
+async function upload(file) {
+  if (!file || busy) return;
+  if (file.size > 100 * 1024 * 1024) { showMsg('File is larger than 100 MB.', true); return; }
+  if (!file.name.toLowerCase().endsWith('.pdf')) { showMsg('Please choose a PDF file.', true); return; }
+  setBusy(true);
+  showMsg('Reading and indexing "' + file.name + '"… this can take a minute for big PDFs.', false, true);
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    const s = await api('/api/upload', { method: 'POST', body: fd });
+    showMsg('', false); clearChat(); setReady(s);
+  } catch (e) { showMsg(e.message, true); }
+  finally { setBusy(false); }
+}
+
+function setBusy(value) {
+  busy = value;
+  qInput.disabled = busy || !documentReady;
+  askBtn.disabled = busy || !documentReady;
+  $('removeBtn').disabled = busy;
+  $('drop').disabled = busy;
+  $('file').disabled = busy;
+}
+
+function clearChat() {
+  chat.textContent = '';
+  const e = document.createElement('div'); e.className = 'empty'; e.id = 'empty';
+  const ornament = document.createElement('div'); ornament.className = 'ornament'; ornament.textContent = '✳';
+  const heading = document.createElement('h2'); heading.textContent = documentReady ? 'Let’s read between the lines.' : 'Your next discovery starts here.';
+  const description = document.createElement('p'); description.textContent = documentReady ? 'Ask a focused question. We’ll find the passages that help you make sense of it.' : 'Upload a PDF, then turn its pages into a conversation. The answers are already in there. Let’s find them.';
+  e.append(ornament, heading, description);
+  if (documentReady) {
+    const suggestions = document.createElement('div'); suggestions.className = 'suggestions';
+    ['What is the main argument?', 'What are the key findings?'].forEach(text => {
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = text;
+      button.onclick = () => { if (!busy) { qInput.value = text; qInput.focus(); } };
+      suggestions.append(button);
+    });
+    e.append(suggestions);
+  }
+  chat.appendChild(e);
+}
+
+function addBubble(text, kind) {
+  const e = $('empty'); if (e) e.remove();
+  const b = document.createElement('div');
+  b.className = 'bubble ' + kind;
+  b.textContent = text;
+  chat.appendChild(b); chat.scrollTop = chat.scrollHeight;
+  return b;
+}
+
+// Render a safe Markdown subset using DOM nodes; model output never becomes HTML.
+function inlineMarkdown(parent, text) {
+  const tokens = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*\n]+\*)/g);
+  for (const token of tokens) {
+    let tag, value;
+    if (token.startsWith('**') && token.endsWith('**')) { tag = 'strong'; value = token.slice(2, -2); }
+    else if (token.startsWith('`') && token.endsWith('`')) { tag = 'code'; value = token.slice(1, -1); }
+    else if (token.startsWith('*') && token.endsWith('*')) { tag = 'em'; value = token.slice(1, -1); }
+    if (tag) { const el = document.createElement(tag); el.textContent = value; parent.append(el); }
+    else parent.append(document.createTextNode(token));
+  }
+}
+function renderAnswer(bubble, text) {
+  bubble.textContent = '';
+  const content = document.createElement('div'); content.className = 'answer'; bubble.append(content);
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const cells = line => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(x => x.trim());
+  const separator = line => line.includes('|') && cells(line).every(x => /^:?-{3,}:?$/.test(x));
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) { i++; continue; }
+    if (line.trim().startsWith('```')) {
+      const pre = document.createElement('pre'); const code = document.createElement('code'); const block = []; i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) block.push(lines[i++]);
+      code.textContent = block.join('\n'); pre.append(code); content.append(pre); i++; continue;
+    }
+    if (i + 1 < lines.length && line.includes('|') && separator(lines[i + 1])) {
+      const wrapper = document.createElement('div'); wrapper.className = 'table-scroll'; wrapper.tabIndex = 0; wrapper.setAttribute('role', 'region'); wrapper.setAttribute('aria-label', 'Answer table');
+      const table = document.createElement('table'); const head = document.createElement('thead'); const body = document.createElement('tbody');
+      const row = (values, target, tag) => { const tr = document.createElement('tr'); values.forEach(value => { const cell = document.createElement(tag); if (tag === 'th') cell.scope = 'col'; inlineMarkdown(cell, value); tr.append(cell); }); target.append(tr); };
+      row(cells(line), head, 'th'); i += 2;
+      while (i < lines.length && lines[i].includes('|') && lines[i].trim()) row(cells(lines[i++]), body, 'td');
+      table.append(head, body); wrapper.append(table); content.append(wrapper); continue;
+    }
+    const heading = line.match(/^#{1,6}\s+(.+)/);
+    if (heading) { const h = document.createElement('h3'); inlineMarkdown(h, heading[1]); content.append(h); i++; continue; }
+    const list = line.match(/^\s*(?:[-*+] |\d+\. )(.+)/);
+    if (list) {
+      const ordered = /^\s*\d+\./.test(line); const ul = document.createElement(ordered ? 'ol' : 'ul');
+      const pattern = ordered ? /^\s*\d+\. (.+)/ : /^\s*[-*+] (.+)/;
+      while (i < lines.length) { const match = lines[i].match(pattern); if (!match) break; const li = document.createElement('li'); inlineMarkdown(li, match[1]); ul.append(li); i++; }
+      content.append(ul); continue;
+    }
+    const paragraph = document.createElement('p'); inlineMarkdown(paragraph, line); content.append(paragraph); i++;
+  }
+}
+
+function addSources(bubble, sources) {
+  if (!sources || !sources.length) return;
+  const pages = [...new Set(sources.map(s => s.page))].sort((a, b) => a - b);
+  const d = document.createElement('details'); d.className = 'src';
+  const sum = document.createElement('summary');
+  sum.textContent = 'Sources: pages ' + pages.join(', ');
+  d.appendChild(sum);
+  sources.forEach(s => {
+    const item = document.createElement('div'); item.className = 'src-item';
+    const pg = document.createElement('span'); pg.className = 'pg'; pg.textContent = 'Page ' + s.page;
+    const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = 'match ' + s.score;
+    const tx = document.createElement('div'); tx.textContent = s.text;
+    item.append(pg, sc, tx); d.appendChild(item);
+  });
+  bubble.appendChild(d);
+}
+
+$('askForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const q = qInput.value.trim();
+  if (!q || busy || !documentReady) return;
+  setBusy(true); qInput.value = '';
+  addBubble(q, 'user');
+  const wait = addBubble('Thinking…', 'bot');
+  try {
+    const r = await api('/api/ask', { method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q }) });
+    renderAnswer(wait, r.answer); addSources(wait, r.sources);
+  } catch (e) { wait.textContent = e.message; wait.classList.add('err'); }
+  setBusy(false); qInput.focus(); chat.scrollTop = chat.scrollHeight;
+});
+
+$('removeBtn').addEventListener('click', async () => {
+  if (busy) return;
+  if (!confirm('Remove this document and start over?')) return;
+  setBusy(true);
+  try { const s = await api('/api/document', { method: 'DELETE' }); clearChat(); setReady(s); showMsg('', false); }
+  catch (e) { showMsg(e.message, true); }
+  finally { setBusy(false); }
+});
+
+const drop = $('drop'), fileInput = $('file');
+drop.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { upload(fileInput.files[0]); fileInput.value = ''; });
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => upload(e.dataTransfer.files[0]));
+
+clearChat();
+api('/api/status').then(setReady).catch(() => showMsg('Cannot reach the server. Refresh to try again.', true));
+</script>
+</body>
+</html>
